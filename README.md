@@ -44,7 +44,7 @@ source("your_path/mmcmcBayes/mmcmcBayes.R")
 
 --
 
-## Example
+## Example of mmcmcBayes Function
 ```r
 wk <- "Your path for the data/Data"
 data1 <- get(load(paste(wk,"chr6_methylation_M_values_cancer_retrospective.RData", 
@@ -53,10 +53,64 @@ data2 <- get(load(paste(wk,"chr6_methylation_M_values_normal_retrospective.RData
                         sep='/')))
 
 ## This is an example of using Bayes Factor
-result <- mmcmcBayes(data1, data2, stage = 1,max_stages = 3,num_splits = 10,
+result1 <- mmcmcBayes(data1, data2, stage = 1,max_stages = 3,num_splits = 10,
                    test = "BF",
                    bf_thresholds = list(stage1 = 10.6, stage2 = 10.7, stage3 = 10.8))
+
+## This is an example of us Anderson-Darling Test
+result2 <- mmcmcBayes(data1, data2, stage = 1,max_stages = 3,num_splits = 10,
+                   test = "AD",
+                   pvalue = list(stage1 = 10^(-6), stage2 = 10^(-6), stage3 = 10^(-6)))
 ```
 
+--
 
+## Model Output
+## The function returns detected DMRs (Partial of Results):
+```r
+result1[1:8,]
+
+   Chromosome  Start_CpG    End_CpG CpG_Count Decision_Value
+1           6 cg00000721 cg00201275       365       10.88718
+2           6 cg00201779 cg00446211       364       10.93774
+3           6 cg00669964 cg00944666       365       11.04935
+4           6 cg00944712 cg01178040       364       10.80733
+5           6 cg01180523 cg01414358       364       10.88814
+6           6 cg01414663 cg01664325       365       10.90684
+7           6 cg01664382 cg01916115       364       10.87119
+8           6 cg01916632 cg02151997       364       10.82806
+
+result2[1:9,]
+
+   Chromosome  Start_CpG    End_CpG CpG_Count Decision_Value
+1           6 cg00000721 cg00201275       365     2.8596e-09
+2           6 cg00201779 cg00446211       364     2.9090e-09
+3           6 cg00944712 cg01178040       364     5.2034e-07
+4           6 cg01180523 cg01414358       364     2.4175e-08
+5           6 cg01414663 cg01664325       365     1.6910e-07
+6           6 cg01664382 cg01916115       364     3.8775e-10
+7           6 cg01916632 cg02151997       364     6.4501e-08
+8           6 cg02152351 cg02407730       365     1.0132e-07
+9           6 cg02407762 cg02689448       365     3.3667e-12
+```
+
+--
+
+## Example of compare_dmrs Function
+## By running the following, returns the overlap between two test
+```r
+compare_dmrs(result1,result2)[1:9,]
+
+     Chromosome Start_CpG_Method1 End_CpG_Method1 Start_CpG_Method2 End_CpG_Method2 Overlap_Percentage
+1          6        cg00000721      cg00201275        cg00000721      cg00201275             100
+2          6        cg00201779      cg00446211        cg00201779      cg00446211             100
+3          6        cg00944712      cg01178040        cg00944712      cg01178040             100
+4          6        cg01180523      cg01414358        cg01180523      cg01414358             100
+5          6        cg01414663      cg01664325        cg01414663      cg01664325             100
+6          6        cg01664382      cg01916115        cg01664382      cg01916115             100
+7          6        cg01916632      cg02151997        cg01916632      cg02151997             100
+8          6        cg02152351      cg02407730        cg02152351      cg02407730             100
+9          6        cg02407762      cg02689448        cg02407762      cg02689448             100
+```
+   
 
