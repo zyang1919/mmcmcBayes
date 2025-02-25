@@ -112,5 +112,13 @@ compare_dmrs(result1,result2)[1:9,]
 8          6        cg02152351      cg02407730        cg02152351      cg02407730             100
 9          6        cg02407762      cg02689448        cg02407762      cg02689448             100
 ```
-   
+
+---
+
+### **Authors**
+This package was developed by:
+
+- **Zhexuan Yang**, Ph.D., Northern Illinois University   
+- **Duchwan Ryu**, Ph.D., Northern Illinois University  
+- **Feng Luan**, Ph.D. Candidate, Northern Illinois University
 
