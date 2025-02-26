@@ -101,16 +101,16 @@ result2[1:9,]
 ```r
 compare_dmrs(result1,result2)[1:9,]
 
-     Chromosome Start_CpG_Method1 End_CpG_Method1 Start_CpG_Method2 End_CpG_Method2 Overlap_Percentage
-1          6        cg00000721      cg00201275        cg00000721      cg00201275             100
-2          6        cg00201779      cg00446211        cg00201779      cg00446211             100
-3          6        cg00944712      cg01178040        cg00944712      cg01178040             100
-4          6        cg01180523      cg01414358        cg01180523      cg01414358             100
-5          6        cg01414663      cg01664325        cg01414663      cg01664325             100
-6          6        cg01664382      cg01916115        cg01664382      cg01916115             100
-7          6        cg01916632      cg02151997        cg01916632      cg02151997             100
-8          6        cg02152351      cg02407730        cg02152351      cg02407730             100
-9          6        cg02407762      cg02689448        cg02407762      cg02689448             100
+   Chromosome Start_CpG_Method1 End_CpG_Method1 Start_CpG_Method2 End_CpG_Method2 Overlap_Percentage
+1           6        cg00000721      cg00201275        cg00000721      cg00201275                100
+2           6        cg00201779      cg00446211        cg00201779      cg00446211                100
+3           6        cg00944712      cg01178040        cg00944712      cg01178040                100
+4           6        cg01180523      cg01414358        cg01180523      cg01414358                100
+5           6        cg01414663      cg01664325        cg01414663      cg01664325                100
+6           6        cg01664382      cg01916115        cg01664382      cg01916115                100
+7           6        cg01916632      cg02151997        cg01916632      cg02151997                100
+8           6        cg02152351      cg02407730        cg02152351      cg02407730                100
+9           6        cg02407762      cg02689448        cg02407762      cg02689448                100
 ```
 
 ---
