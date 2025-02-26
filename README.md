@@ -15,7 +15,7 @@ in **DNA methylation** data. It uses Bayesian inference with **Alpha-Skew Genera
 - Provides **Decision_Value** from the test methods. 
 - Supports **customizable MCMC settings and priors**.
 
----
+
 
 ## Function Arguments
 
@@ -44,8 +44,6 @@ system("git clone https://github.com/zyang1919/mmcmcBayes.git")
 # Load the functions
 source("your_path/mmcmcBayes/mmcmcBayes.R")
 ```
-
---
 
 ## Examples
 ```r
