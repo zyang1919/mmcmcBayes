@@ -47,11 +47,10 @@ source("your_path/mmcmcBayes/mmcmcBayes.R")
 
 ## Examples
 ```r
+## read data
 wk <- "Your path for the data/Data"
-data1 <- get(load(paste(wk,"chr6_methylation_M_values_cancer_retrospective.RData", 
-                        sep='/')))
-data2 <- get(load(paste(wk,"chr6_methylation_M_values_normal_retrospective.RData", 
-                        sep='/')))
+data1 <- get(load(paste(wk,"chr6_methylation_M_values_cancer_retrospective.RData",sep='/')))
+data2 <- get(load(paste(wk,"chr6_methylation_M_values_normal_retrospective.RData",sep='/')))
 
 ## This is an example of using Bayes Factor
 result1 <- mmcmcBayes(data1, data2, stage = 1,max_stages = 3,num_splits = 10,
