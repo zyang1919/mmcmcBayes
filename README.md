@@ -9,7 +9,7 @@ in **DNA methylation** data. It uses Bayesian inference with **Alpha-Skew Genera
 - Implements **Multistage MMCMC** to refine DMR detection.
 - Supports **two statistical testing approaches**:
   - **Bayes Factor (BF)** – Bayesian model comparison for DMR detection.
-  - **Anderson-Darling Test (AD)** – Nonparametric Frequentist test for distributional differences.
+  - **Anderson-Darling Test (AD)** – Nonparametric frequentist test for distributional differences.
 - Provides the location of detected DMRs using the CpG coordinates as **Start_CpG** and **End_CpG**.
 - Provides **CpG_Count**, showing how many CpG sites detected in the region.
 - Provides **Decision_Value** from the test methods. 
@@ -25,7 +25,7 @@ in **DNA methylation** data. It uses Bayesian inference with **Alpha-Skew Genera
 - **`max_stages`**: Maximum number of iterative refinement stages (default: `3`).
 - **`num_splits`**: Number of sub-segments per stage (default: `10`).
 - **`bf_thresholds`**: Bayes Factor thresholds per stage. If `NULL`, then use the default value (`list(stage1 = 10, stage2 = 15, stage3 = 20)`).
-- **`pvalue_thresholds`**: AD test p-value thresholds. If `NULL`, then use the default value (`list(stage1 = 1e-4, stage2 = 1e-6, stage3 = 1e-8)`).
+- **`pvalue`**: AD test p-value thresholds. If `NULL`, then use the default value (`list(stage1 = 1e-4, stage2 = 1e-6, stage3 = 1e-8)`).
 - **`mcmc`**: List of MCMC settings (`list(nburn = 5000, niter = 10000, thin = 1)`).
 - **`priors`**: List of prior values (default: `NULL`).
 
