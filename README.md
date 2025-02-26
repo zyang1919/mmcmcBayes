@@ -9,7 +9,7 @@ in **DNA methylation** data. It uses Bayesian inference with **Alpha-Skew Genera
 - Implements **Multistage MMCMC** to refine DMR detection.
 - Supports **two statistical testing approaches**:
   - **Bayes Factor (BF)** – Bayesian model comparison for DMR detection.
-  - **Anderson-Darling Test (AD)** – Non-parametric Frequentist test for distributional differences.
+  - **Anderson-Darling Test (AD)** – Nonparametric Frequentist test for distributional differences.
 - Provides the location of detected DMRs using the CpG coordinates as **Start_CpG** and **End_CpG**.
 - Provides **CpG_Count**, showing how many CpG sites detected in the region.
 - Provides **Decision_Value** from the test methods. 
@@ -19,7 +19,7 @@ in **DNA methylation** data. It uses Bayesian inference with **Alpha-Skew Genera
 
 ## Function Arguments
 
-### **Main Function: `mmcmcBayes()`**
+### `mmcmcBayes()` ###
 - **`cancer_data`**, **`normal_data`**: Data frames containing **M-values** for cancer and normal groups.
 - **`test`**: Statistical test for DMR detection (`"BF"` for Bayes Factor, `"AD"` for Anderson-Darling Test).
 - **`max_stages`**: Maximum number of iterative refinement stages (default: `3`).
@@ -29,6 +29,9 @@ in **DNA methylation** data. It uses Bayesian inference with **Alpha-Skew Genera
 - **`mcmc`**: List of MCMC settings (`list(nburn = 5000, niter = 10000, thin = 1)`).
 - **`priors`**: List of prior values (default: `NULL`).
 
+### `compare_dmrs()` ###
+- **`rst1`**: Detected DMRs from one method.
+- **`rst2`**: Detected DMRs from another method. 
 ---
 
 ## Installation
@@ -44,7 +47,7 @@ source("your_path/mmcmcBayes/mmcmcBayes.R")
 
 --
 
-## Example of mmcmcBayes Function
+## Examples
 ```r
 wk <- "Your path for the data/Data"
 data1 <- get(load(paste(wk,"chr6_methylation_M_values_cancer_retrospective.RData", 
@@ -61,12 +64,14 @@ result1 <- mmcmcBayes(data1, data2, stage = 1,max_stages = 3,num_splits = 10,
 result2 <- mmcmcBayes(data1, data2, stage = 1,max_stages = 3,num_splits = 10,
                    test = "AD",
                    pvalue = list(stage1 = 10^(-6), stage2 = 10^(-6), stage3 = 10^(-6)))
+
+## Comparing the results from two test
+overlap <- compare_dmrs(result1,result2)
+
 ```
 
---
 
 ## Model Output
-## The function returns detected DMRs (Partial of Results):
 ```r
 result1[1:8,]
 
@@ -92,14 +97,8 @@ result2[1:9,]
 7           6 cg01916632 cg02151997       364     6.4501e-08
 8           6 cg02152351 cg02407730       365     1.0132e-07
 9           6 cg02407762 cg02689448       365     3.3667e-12
-```
 
---
-
-## Example of compare_dmrs Function
-## By running the following, returns the overlap between two test
-```r
-compare_dmrs(result1,result2)[1:9,]
+overlap[1:9,]
 
    Chromosome Start_CpG_Method1 End_CpG_Method1 Start_CpG_Method2 End_CpG_Method2 Overlap_Percentage
 1           6        cg00000721      cg00201275        cg00000721      cg00201275                100
@@ -112,8 +111,6 @@ compare_dmrs(result1,result2)[1:9,]
 8           6        cg02152351      cg02407730        cg02152351      cg02407730                100
 9           6        cg02407762      cg02689448        cg02407762      cg02689448                100
 ```
-
----
 
 ### **Authors**
 This package was developed by:
