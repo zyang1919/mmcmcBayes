@@ -5,7 +5,8 @@ mmcmcBayes <- function(cancer_data, normal_data,
                        num_splits = 10, 
                        test = "BF", 
                        mcmc = NULL, 
-                       priors = NULL, 
+                       priors_cancer = NULL, 
+                       priors_normal = NULL, 
                        bf_thresholds = NULL, 
                        pvalue = NULL) {
   
@@ -74,15 +75,12 @@ mmcmcBayes <- function(cancer_data, normal_data,
   
   ####### Process the Current Stage #######
   if (is.null(mcmc)) {
-    # Default MCMC settings
     mcmc <- list(nburn = 5000, niter = 10000, thin = 1)  
   }
   if (is.null(bf_thresholds)) {
-    # Default BF thresholds
     bf_thresholds <- list(stage1 = 10, stage2 = 15, stage3 = 20)  
   }
   if (is.null(pvalue)) {
-    # Default p-value thresholds
     pvalue <- list(stage1 = 10^(-4), stage2 = 10^(-6), stage3 = 10^(-8))  
   }
   
@@ -100,18 +98,19 @@ mmcmcBayes <- function(cancer_data, normal_data,
     return(NULL)
   }
   
-  posterior_cancer <- asgn_func(ybar_cancer, priors, mcmc)
-  posterior_normal <- asgn_func(ybar_normal, priors, mcmc)
+  ####### Run ASGN Function for Both Groups #######
+  posterior_cancer <- asgn_func(ybar_cancer, priors_cancer, mcmc)
+  posterior_normal <- asgn_func(ybar_normal, priors_normal, mcmc)
   
   ####### Select Statistical Test #######
   if (test == "BF") {
-    BF <- calBF(ybar_cancer, ybar_normal, posterior_cancer, posterior_normal)
+    BF <- calBF(ybar_cancer, ybar_normal, posterior_cancer$posteriors, posterior_normal$posteriors)
     threshold <- bf_thresholds[[paste0("stage", stage)]]
     decision_value <- BF
     decision_criteria <- (BF >= threshold)
     cat("Bayes Factor at Stage", stage, ":", BF, "\n")
   } else if (test == "AD") {
-    p_value <- calAD(ybar_cancer, ybar_normal, posterior_cancer, posterior_normal)
+    p_value <- calAD(ybar_cancer, ybar_normal, posterior_cancer$posteriors, posterior_normal$posteriors)
     threshold <- pvalue[[paste0("stage", stage)]]
     decision_value <- p_value
     decision_criteria <- (p_value < threshold)
@@ -147,13 +146,26 @@ mmcmcBayes <- function(cancer_data, normal_data,
   cancer_sub_segments <- lapply(split_indices, function(idx) cancer_data[idx, , drop = FALSE])
   normal_sub_segments <- lapply(split_indices, function(idx) normal_data[idx, , drop = FALSE])
   
-  ####### Process Each Sub-Segment #######
+  ####### Process Each Sub-Segment with Updated Priors #######
   results <- lapply(seq_along(cancer_sub_segments), function(i) {
+    new_priors_cancer <- list(
+      alpha = posterior_cancer$posteriors[1],
+      mu = posterior_cancer$posteriors[2],
+      sigma2 = posterior_cancer$posteriors[3]
+    )
+    
+    new_priors_normal <- list(
+      alpha = posterior_normal$posteriors[1],
+      mu = posterior_normal$posteriors[2],
+      sigma2 = posterior_normal$posteriors[3]
+    )
+    
     mmcmcBayes(cancer_sub_segments[[i]], normal_sub_segments[[i]], stage + 1, max_stages, num_splits, 
-               test, mcmc, priors, bf_thresholds, pvalue)
+               test, mcmc, new_priors_cancer, new_priors_normal, bf_thresholds, pvalue)
   })
   
   results <- Filter(Negate(is.null), results)
   
   return(do.call(rbind, results))
 }
+

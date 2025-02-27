@@ -8,9 +8,9 @@ asgn_func <- function(data,
     stop("MCMCpack package is required but not installed. Install it using install.packages('MCMCpack')")
   }
   
-  ybar <- data
+  ybar <- data  # Input is already the mean methylation level
   
-  # If this is Stage 1 (no priors provided), use empirical estimates
+  # Initialize priors based on Stage 1 (NULL) or previous stage priors
   if (is.null(priors)) {
     prior_mean_mu <- mean(ybar, na.rm = TRUE)  
     prior_sd_mu <- sd(ybar, na.rm = TRUE)  
@@ -23,17 +23,24 @@ asgn_func <- function(data,
       mu = prior_mean_mu,
       sigma2 = prior_mean_sigma2
     )
+  } else {
+    # If priors are provided (starting Stage 2), compute prior SDs from given priors
+    prior_mean_mu <- priors$mu
+    prior_sd_mu <- sqrt(priors$sigma2)  # Use the provided sigma2 to compute an appropriate SD for mu
+    
+    prior_mean_sigma2 <- priors$sigma2
+    prior_sd_sigma2 <- prior_mean_sigma2 / 2  # Maintain the same regularization rule
   }
   
-  # Set default MCMC values if not provided
+  # Set MCMC parameters
   nburn <- ifelse(is.null(mcmc$nburn), 5000, mcmc$nburn)
   niter <- ifelse(is.null(mcmc$niter), 10000, mcmc$niter)
   thin  <- ifelse(is.null(mcmc$thin), 1, mcmc$thin)
   
   # Extract priors for this stage
   alpha_pri <- as.numeric(priors$alpha);siga <- 1
-  mu_pri <- as.numeric(priors$mu);sigm <- (prior_sd_mu)^2
-  sigma2_pri <- as.numeric(priors$sigma2)
+  mu_pri <- as.numeric(prior_mean_mu);sigm <- (prior_sd_mu)^2
+  sigma2_pri <- as.numeric(prior_mean_sigma2)
   
   # Regularized inverse gamma prior
   As <- (sigma2_pri^2) / (sigma2_pri^2 / 2) + 2  
@@ -46,7 +53,7 @@ asgn_func <- function(data,
   
   ## MCMC Info
   total_iter <- nburn + niter * thin  # Total iterations including thinning
-
+  
   n <- nrow(ybar)
   
   ## Containers for posterior samples
@@ -127,5 +134,8 @@ asgn_func <- function(data,
   sig_post <- mean(sig_samples)
   
   ## Return results
-  return(c(alpha_post, mu_post, sig_post))
+  return(list(
+    posteriors = c(alpha_post, mu_post, sig_post),
+    samples = list(alpha = alpha_samples, mu = mu_samples, sigma2 = sig_samples)
+  ))
 }
